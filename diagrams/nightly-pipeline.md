@@ -66,6 +66,7 @@ Automated cron jobs that run from midnight to 8 AM every night.
 | 3:00 AM | Self-Architecture | Research improvements to own architecture | Architecture doc |
 | 4:30 AM | News Scrape | Global news relevant to user's interests | News digest |
 | 6:00 AM | Repo Update | Push all findings to GitHub repos | Git commits |
+| 7:00 AM | Hermes Self-Update | Run `hermes update` to keep agent software current | Version log |
 | 8:00 AM | Morning Summary | Deliver comprehensive summary to Telegram | Telegram message |
 
 ## Topic Rotation
