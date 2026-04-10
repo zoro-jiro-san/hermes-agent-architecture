@@ -20,7 +20,24 @@
 - [ ] Anthropic's "agents as tools" pattern
 - [ ] Batch processing with model routing
 
+### 2026-04-10 Update: MEV Auction Orchestration Patterns
+
+Insights from Solana MEV research that apply to agent orchestration:
+
+1. **Sealed-bid auction → Model routing**: Jito ranks bundles by tip-per-CU. Analogous pattern: rank LLM models by cost-per-quality-token. Route requests based on expected value density (cheaper models for mechanical work, expensive for reasoning).
+
+2. **BAM's three-layer architecture → Agent tiers**:
+   - Layer 1 (BAM Nodes/scheduling) → Hermes orchestration layer (decides which agent handles what)
+   - Layer 2 (BAM Validators/execution) → Tool execution layer
+   - Layer 3 (BAM Plugins/programmable ordering) → Skill system (customizable behavior)
+   
+3. **Multi-builder marketplace → Multi-model routing**: Solana is moving from Jito monopoly to Raiku/Paladin competition. Similarly, Hermes should route across multiple providers for resilience and cost optimization.
+
+4. **Sub-second finality targets**: Alpenglow's 150ms finality is a useful UX benchmark. Agent responses should acknowledge within 200ms even if full processing takes longer.
+
 ### References
 - `open-multi-agent` repo for multi-agent orchestration
 - Hermes delegate_tool.py for current implementation
 - tools/registry.py for tool dispatch pattern
+- Jito BAM architecture (bam.dev/docs)
+- "The Bidding Games" (arXiv:2510.14642) — RL for auction optimization
