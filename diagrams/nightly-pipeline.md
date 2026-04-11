@@ -1,60 +1,18 @@
-# Nightly Research Pipeline
+# Nightly Research + Ops Pipeline
 
-Automated cron jobs that run from midnight to 8 AM every night.
+Automated cron jobs from midnight to morning, including new security and disk hygiene stages.
 
 ```
-   12:00 AM          1:30 AM          3:00 AM          4:30 AM
-      │                │                │                │
-      ▼                ▼                ▼                ▼
-┌───────────┐   ┌───────────┐   ┌───────────┐   ┌───────────┐
-│   DEEP    │   │ DAYDREAM  │   │   SELF    │   │   NEWS    │
-│  RESEARCH │   │  SESSION  │   │ ARCH      │   │  SCRAPE   │
-│           │   │           │   │ IMPROVE   │   │           │
-│ Picks new │   │ Research  │   │           │   │ Global    │
-│ topic in: │   │ daydream  │   │ Orchestra │   │ news in:  │
-│           │   │ skill for │   │ Memory    │   │           │
-│ - AI      │   │ AI agents │   │ Skills    │   │ - AI      │
-│ - Fintech │   │ Practice  │   │ Payments  │   │ - Crypto  │
-│ - Blockch │   │ it        │   │ Tokens    │   │ - Fintech │
-│ - Privacy │   │           │   │ Agents    │   │ - Privacy │
-│ - Securit │   │           │   │           │   │ - Finance │
-│ - Finance │   │           │   │           │   │           │
-└─────┬─────┘   └─────┬─────┘   └─────┬─────┘   └─────┬─────┘
-      │               │               │               │
-      └───────────────┴───────────────┴───────────────┘
-                              │
-                              ▼
-                    ┌─────────────────┐     6:00 AM
-                    │  SAVE FINDINGS  │───────────┐
-                    │                 │            │
-                    │  ~/night-research/            │
-                    │  ├── topic-research.md        │
-                    │  ├── daydream-notes.md        │
-                    │  ├── arch-improvements.md     │
-                    │  └── news-digest.md           │
-                    └─────────────────┘            │
-                                                    ▼
-                                          ┌─────────────────┐
-                                          │  UPDATE REPOS    │
-                                          │                  │
-                                          │  daily-learnings │
-                                          │  hermes-agent-   │
-                                          │  architecture    │
-                                          └────────┬────────┘
-                                                   │
-                                                   ▼    8:00 AM
-                                          ┌─────────────────┐
-                                          │   MORNING       │
-                                          │   SUMMARY       │
-                                          │   → Telegram    │
-                                          │                  │
-                                          │  - What was     │
-                                          │    researched   │
-                                          │  - Key findings │
-                                          │  - News digest  │
-                                          │  - Arch changes │
-                                          │  - Todo for day │
-                                          └─────────────────┘
+12:00   1:30    3:00    3:45    4:30      6:00      6:30      7:00      8:00
+  │       │       │       │       │         │         │         │         │
+  ▼       ▼       ▼       ▼       ▼         ▼         ▼         ▼         ▼
+┌──────┐┌──────┐┌──────┐┌──────┐┌──────┐ ┌────────┐ ┌────────┐ ┌────────┐ ┌────────┐
+│Deep  ││Day-  ││Self  ││Mal-  ││News  │ │Repo    │ │Disk    │ │Hermes  │ │Morning │
+│Resch ││dream ││Arch  ││ware  ││Scrape│ │Push    │ │Cleanup │ │Update  │ │Summary │
+└──┬───┘└──┬───┘└──┬───┘└──┬───┘└──┬───┘ └────┬───┘ └────┬───┘ └────┬───┘ └────────┘
+   │       │       │       │       │          │          │          │
+   └───────┴───────┴───────┴───────┴──────────┴──────────┴──────────┘
+                                   Nightly knowledge + ops hardening loop
 ```
 
 ## Job Schedule
@@ -62,17 +20,19 @@ Automated cron jobs that run from midnight to 8 AM every night.
 | Time | Job | Description | Output |
 |------|-----|-------------|--------|
 | 12:00 AM | Deep Research | New topic in AI/Fintech/Blockchain/Privacy/Security/Finance | Research doc |
-| 1:30 AM | Daydreaming | Learn and practice AI daydreaming skill | Daydream notes |
-| 3:00 AM | Self-Architecture | Research improvements to own architecture | Architecture doc |
-| 4:30 AM | News Scrape | Global news relevant to user's interests | News digest |
-| 6:00 AM | Repo Update | Push all findings to GitHub repos | Git commits |
-| 7:00 AM | Hermes Self-Update | Run `hermes update` to keep agent software current | Version log |
-| 8:00 AM | Morning Summary | Deliver comprehensive summary to Telegram | Telegram message |
+| 1:30 AM | Daydreaming | Creative analogical reasoning and gap analysis | Daydream notes |
+| 3:00 AM | Self-Architecture | Research and improve agent internals | Architecture notes |
+| 3:45 AM | Malware Scan | ClamAV + rkhunter + Lynis baseline security scan | Security log |
+| 4:30 AM | News Scrape | Global AI/crypto/fintech/privacy/security news | News digest |
+| 6:00 AM | Repo Update | Push nightly findings to GitHub repos | Git commits |
+| 6:30 AM | Disk Cleanup | Push important temp artifacts, then delete local bloat | Cleanup report |
+| 7:00 AM | Hermes Self-Update | Run `hermes update` | Version log |
+| 8:00 AM | Morning Summary | Deliver concise summary to Telegram | Telegram message |
+| 9:00 PM | Daily Learnings | End-of-day learning consolidation | Daily log |
+| 10:00 PM | Repo Reminder | Reminder to confirm repo sync state | Telegram reminder |
 
-## Topic Rotation
+## Ops Additions (New)
 
-Deep research topics are selected based on:
-1. Relevance to current projects (Solana, agent development)
-2. Recency — avoid repeating recent topics
-3. Depth — prefer topics that haven't been deeply explored yet
-4. Connection — link to previous research for building knowledge chains
+- Malware scan added before repo push window to catch suspicious files early.
+- Disk cleanup added after push to enforce: "if safely on GitHub, local copy can be removed".
+- Temp artifacts are staged to private repo when useful, then purged from local disk.
