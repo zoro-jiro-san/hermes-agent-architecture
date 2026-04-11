@@ -28,6 +28,7 @@ Hermes is a multi-modal AI agent that operates across CLI, Telegram, Discord, Sl
 | [Agent Orchestration](research/orchestration.md) | Active | Multi-agent delegation, parallel task execution |
 | [Memory Management](research/memory.md) | Active | Cross-session persistence, context compression, RAG |
 | [Token Efficiency](research/token-efficiency.md) | Active | Prompt caching, compression, model routing |
+| [Sandboxing](research/sandboxing.md) | Active | Lightweight command isolation for low-disk ARM runtime |
 | [Daydreaming](research/daydreaming.md) | Exploring | Autonomous exploration and creative reasoning |
 | [Agentic Payments](research/agentic-payments.md) | Planned | Self-managed budgets, payment rails |
 | [Skill Evolution](research/skill-evolution.md) | Active | Auto-creation, maintenance, and optimization of skills |
