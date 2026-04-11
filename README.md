@@ -18,6 +18,7 @@ Hermes is a multi-modal AI agent that operates across CLI, Telegram, Discord, Sl
 | [Tool Pipeline](diagrams/tool-pipeline.md) | Tool discovery, dispatch, and execution |
 | [Multi-Platform Gateway](diagrams/gateway.md) | Telegram, Discord, Slack, WhatsApp adapters |
 | [Nightly Pipeline](diagrams/nightly-pipeline.md) | Automated research and self-improvement cron jobs |
+| [Security + Sandbox + Disk Hygiene](diagrams/security-ops.md) | Malware scanning, lightweight sandboxing, and low-disk cleanup flow |
 | [Skill System](diagrams/skill-system.md) | Skill loading, discovery, and execution |
 
 ## Research Areas

@@ -99,3 +99,9 @@
 - Config: YAML settings + .env secrets
 - Sessions: SQLite with FTS5 full-text search
 - Cron: Scheduled jobs with output delivery
+
+### Ops & Security Layer (new)
+- Malware scanning scripts (ClamAV daemon + rkhunter + Lynis)
+- Per-file pre-processing scan for scraped/downloaded artifacts
+- Lightweight sandbox runner (bubblewrap) for risky short-lived commands
+- Daily post-push disk cleanup to keep 29GB host lean
