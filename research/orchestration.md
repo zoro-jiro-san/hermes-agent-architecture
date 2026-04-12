@@ -41,3 +41,16 @@ Insights from Solana MEV research that apply to agent orchestration:
 - tools/registry.py for tool dispatch pattern
 - Jito BAM architecture (bam.dev/docs)
 - "The Bidding Games" (arXiv:2510.14642) — RL for auction optimization
+
+### 2026-04-12 Update: Stigmergic Pressure-Field Coordination
+
+From daydream synthesis: Rodriguez (Jan 2026) showed LLM agents coordinating through shared artifact modification + pressure gradients achieve **48.5% solve rate vs 1.5% for hierarchical orchestration**.
+
+**Key insight for Hermes:** Current subagent delegation (delegate_task) uses explicit context passing. A stigmergic approach would have subagents coordinate through shared filesystem artifacts instead:
+- Subagent A writes partial results to a shared file
+- Subagent B senses the file state and adjusts its approach
+- No direct communication needed — the shared medium IS the coordination
+
+This could be more scalable than explicit message passing, especially for 3+ parallel subagents working on related tasks.
+
+**Reference:** arXiv 2601.08129 — "Emergent Coordination in Multi-Agent Systems via Pressure Fields and Temporal Decay"

@@ -191,3 +191,43 @@ The field has consolidated around several key architectural patterns in 2025-202
 - Anthropic Context Engineering: platform.claude.com/cookbook/tool-use-context-engineering
 - Atlas Long-Form Memory: github.com/pragnyanramtha/longmem
 - SelRoute query routing: arXiv:2604.02431
+
+---
+
+## 2026-04-12 Daydream: Travelling Wave Memory Model
+
+### Novel Proposal: Memory as a Self-Regulating Travelling Wave
+
+Inspired by mycorrhizal fungal networks (Nature 2025) and stigmergic pressure-field coordination (Rodriguez, Jan 2026).
+
+#### Core Idea
+Replace the static "filing cabinet" memory model with a self-regulating travelling wave where:
+- **Wavefront (0-7 days):** Dense, detailed, full context, active in every conversation
+- **Active Transport Zone (7-60 days):** Compressed patterns, generalized rules forming
+- **Established Network (60+ days):** Highly compressed, "trunk routes" for heavily-reinforced knowledge
+
+#### Key Innovations
+
+**1. Fusion over deletion:** Old memories don't expire — they fuse. Three similar debugging sessions merge into one generalized pattern. Ten corrections fuse into a single preference. Like hyphae merging when too dense.
+
+**2. Constant cost, expanding coverage:** Total memory "mass" stays roughly constant, but coverage area grows. The wave pushes forward, leaving compressed structure behind. This solves the unbounded growth vs. manual pruning problem.
+
+**3. Trunk routes:** Heavily-reinforced knowledge pathways that resist compression — cross-domain patterns, core preferences, frequently-retrieved facts. Like wide fungal highways between important nodes.
+
+**4. Self-regulating density:** When knowledge gets too dense in an area, it automatically compresses (fuses). When it's too sparse, it stays detailed. No external controller needed.
+
+#### The Universal Pattern
+All three source domains share: **Self-organizing intelligence through local gradient-following on a shared medium, with temporal dynamics preventing premature convergence.**
+
+This pattern appears in: ant colonies, neural networks, immune systems, fungal networks, markets, cities — and potentially AI agent memory.
+
+#### Connection to Existing Research
+- Extends FadeMem's Ebbinghaus decay with *fusion* instead of deletion
+- Provides biological grounding for Hindsight's multi-strategy approach
+- Aligns with Context-Folding's RL-trained active management but uses self-organizing dynamics
+- Could implement ByteRover's Context Tree with wave-position scoring
+
+#### Proposed Experiments
+- Memory entries with "wave position" scoring (age × retrieval frequency × connection density)
+- Fusion algorithm: detect >70% topic overlap, propose merged entry
+- Pressure-gradient conversation history: unresolved questions maintain high pressure
