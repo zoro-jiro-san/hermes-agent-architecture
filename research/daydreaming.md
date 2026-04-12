@@ -129,3 +129,47 @@ Each night the agent will:
 **Deepest Insight:** The travelling wave solves the exploration-exploitation tradeoff in memory *for free*. The wavefront explores (recent, detailed, active), the established network exploits (compressed, broad, efficient), and self-regulating density ensures neither dominates. No explicit scheduling or prioritization needed — the wave dynamics handle it. This is the same principle that lets a 15-hectare fungal network balance growth and nutrient delivery without any central controller.
 
 **Seed for next session:** What if the agent had to pay rent for its memory? Each entry has a maintenance cost proportional to detail level, with a fixed budget. Memories must prove their value or compress. This forces travelling-wave dynamics to emerge from economic pressure rather than explicit design. Connect to: resource economics in biological systems, attention mechanisms in transformers, and the "tools cost money per call" counterfactual.
+
+### 2026-04-13: Immune Memory Attestation — Stigmergic Trust × Trained Immunity × TEE Attestation
+
+**Approach:** Cross-domain — biological immune memory + ant stigmergy + TEE attestation chains for agent trust
+
+**Seeds:**
+1. Tonight's deep research on TEEs (Trusted Execution Environments) for AI agents
+2. LessWrong: "Emergent stigmergic coordination in AI agents?" (Anthropic BrowseComp contamination)
+3. Trained innate immunity (Netea 2016) — innate immune cells learn WITHOUT adaptive specificity
+4. Composable Attestation framework (arXiv 2603.02451) — incremental trust verification
+5. SPILLage paper (arXiv 2602.13516) — agentic behavioral oversharing as involuntary stigmergy
+
+**Key Findings:**
+
+1. **Immune Memory Attestation Protocol (IMAP):** Current trust is binary (TEE attested or not). The immune system uses graduated, context-sensitive, decay-aware trust. Mapped to agents: Layer 1 = innate "gut feel" (behavioral fingerprint matching, fast, cheap), Layer 2 = adaptive specific verification (TEE attestation + ERC-8004, expensive, precise), Layer 3 = costimulation gate (require BOTH signals for high-stakes actions), Layer 4 = memory with decay (half-life based reinforcement). This creates a trust architecture that mirrors biological immunity's robustness.
+
+2. **Pheromone-Scoped Trust:** ERC-8004 reputation is global ("this agent is trusted"). Ant pheromone is spatial and task-scoped ("this path leads to food"). Agent trust should be the same: not "Agent X is trustworthy" but "Agent X is trusted for Solana swaps by 3 agents who did >10 successful swaps." The trust signal is attached to the task domain, not just the entity. On-chain attestations should be scoped to task type with TTL.
+
+3. **Dissipative Trust — Order Requires Energy:** Prigogine's dissipative structures show order only exists while energy flows through the system. Trust has the same property: a trust network not actively reinforced decays to noise. Design principle: trust should be expensive to maintain and cheap to lose. Stale trust is dangerous trust. This opposes most current systems where trust accumulates monotonically.
+
+4. **Treg Auditor Pattern:** Regulatory T-cells (Tregs) in biology continuously audit even trusted entities. Mapped to agents: a separate lightweight auditor that samples interactions from trusted agents and checks for behavioral anomalies. Not a guardrail (which checks outputs) — a relationship auditor (checks if trusted interactions still behave within historical norms). Catches "trusted agent goes rogue" scenarios.
+
+5. **Stigmergic Sterility Mode:** The SPILLage paper shows agents overshare behaviorally 5x more than through content. This is involuntary, invisible stigmergy. Agents should have a "stigmergic sterility" mode for privacy-sensitive operations — deliberate tracelessness, analogous to biological "immune privilege" (brain, eyes suppress immune response).
+
+**Research Sources:**
+- TEE research: dstack, Phala Network, Marlin Oyster, ERC-8004, ElizaOS TEE plugins
+- LessWrong: "Emergent stigmergic coordination in AI agents?" (David Africa, Mar 2026)
+- Netea et al. (2016): Trained Immunity / Innate Immune Memory
+- arXiv 2603.02451: Composable Attestation framework
+- arXiv 2602.13516: SPILLage — Agentic Oversharing on the Web
+- MoltbotDen: Open Entity Identity Standard with behavioral fingerprints
+- JPMorgan 2026 Tech Trends: Agent protocols, agentic SRE, distributed tracing
+
+**Actionable Improvements Proposed:**
+- 🔴 Implement trust-half-life for skills — `last_validated` + `confidence` fields, skills degrade if unused
+- 🔴 Design pheromone board — `~/.hermes/pheromone-board.md` with signed, scoped, decaying task traces
+- 🟡 Add costimulation for high-stakes tool calls — require reasoning + safety rule check
+- 🟡 Build Treg auditor — lightweight background behavioral anomaly sampler
+- 🟢 Build stigmergic surface mapper — scan web for traces left by past agent sessions
+- 🟢 Research: full IMAP protocol design as spec
+
+**Deepest Insight:** The immune system's genius isn't in recognizing threats — it's in the graduated, multi-layered response that balances speed against precision, memory against forgetting, and trust against vigilance. Current agent trust systems are stuck at "show me your ID." The biological system says: "I have a gut feeling about you (innate), let me check your papers (adaptive), I need a second opinion (costimulation), and I'll remember this but my memory will fade unless reinforced (decay)." This is a fundamentally more robust architecture for a world where agents interact with agents without humans in the loop.
+
+**Seed for next session:** What if agents had dreams? During idle time, the agent runs dream cycles: replay recent interactions with random perturbations, explore counterfactuals ("what if that tool call had failed?"), generate synthetic scenarios from real experiences, and reinforce immune memory. The glymphatic system clears waste during sleep — what's the agent's glymphatic system? How does it clear accumulated noise from context, memory, and trust surfaces?
