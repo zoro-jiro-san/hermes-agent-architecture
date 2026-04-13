@@ -20,6 +20,7 @@ Hermes is a multi-modal AI agent that operates across CLI, Telegram, Discord, Sl
 | [Nightly Pipeline](diagrams/nightly-pipeline.md) | Automated research and self-improvement cron jobs |
 | [Security + Sandbox + Disk Hygiene](diagrams/security-ops.md) | Malware scanning, lightweight sandboxing, and low-disk cleanup flow |
 | [Skill System](diagrams/skill-system.md) | Skill loading, discovery, and execution |
+| [IMAP Trust Protocol](diagrams/imap-trust-protocol.md) | Immune Memory Attestation Protocol for agent trust |
 
 ## Research Areas
 

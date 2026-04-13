@@ -47,3 +47,36 @@ bash ~/.hermes/scripts/sandbox-run.sh "python3 -c 'print(123)'"
 - Keep sandbox ephemeral (tmpfs + temp workdir).
 - Do not use sandbox for tasks that require persistent state unless explicitly needed.
 - Layer with malware scanning for downloaded artifacts.
+
+## TEE (Trusted Execution Environment) — Production Isolation
+
+*Added 2026-04-13 from TEE deep research*
+
+For production agent deployments where sandboxing is insufficient (agents managing wallets, handling private keys, executing trades), TEEs provide hardware-enforced isolation.
+
+### When to Escalate from Sandboxing to TEE
+
+| Scenario | Sandboxing | TEE |
+|---|---|---|
+| Running untrusted code snippets | ✅ bubblewrap | Overkill |
+| Agent manages crypto wallets | Insufficient | ✅ Required |
+| Agent handles user PII | Partial | ✅ Recommended |
+| Multi-agent coordination with shared secrets | Insufficient | ✅ Required |
+| Autonomous financial transactions | Insufficient | ✅ Required |
+
+### TEE Stack for Agent Deployment
+
+- **dstack** — Docker Compose-native TEE deployment (Intel TDX + NVIDIA GPU CC). No code changes. Open source.
+- **Phala Cloud** — Managed TEE infrastructure for AI agents. SOC 2 Type I, HIPAA compliant.
+- **NVIDIA H100 GPU CC** — Hardware-level TEE for AI inference, <7% overhead.
+- **ERC-8004** — On-chain identity + TEE attestation for verifiable agents.
+
+### Key Insight
+
+Sandboxing (bubblewrap) isolates *processes from the host*. TEEs isolate *computation from everyone* — including the cloud provider, the host OS, and even the developer. For agents that operate autonomously with financial authority, TEEs shift trust from "I trust the operator" to "I trust the hardware + cryptography."
+
+### Resources
+- dstack: https://github.com/Dstack-TEE/dstack
+- Phala Cloud: https://cloud.phala.com
+- ERC-8004: https://github.com/Phala-Network/erc-8004-tee-agent
+- Proof-of-Guardrail paper: arXiv:2603.05786
