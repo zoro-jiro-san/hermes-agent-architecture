@@ -32,12 +32,24 @@
 │                    │  │ Memory    │  │                          │
 │                    │  │ System    │  │                          │
 │                    │  └───────────┘  │                          │
+│                    │  ┌───────────┐  │                          │
+│                    │  │Orchestrator│ │ ← delegates all work to │
+│                    │  │  Layer     │ │   specialized subagents │
+│                    │  └───────────┘  │                          │
 │                    └────────┬────────┘                          │
 │                             │                                    │
 │                    ┌────────▼────────┐                          │
 │                    │  Tool Registry  │                          │
 │                    │  (registry.py)  │                          │
 │                    └────────┬────────┘                          │
+│                             │                                    │
+│         ┌───────────────────┼───────────────────┐               │
+│         │                   │                   │               │
+│    ┌────▼────┐        ┌────▼────┐        ┌────▼────┐          │
+│    │ Inbox   │        │  Code   │        │ Research│          │
+│    │ Monitor │        │ Reviewer│        │  Agent  │          │
+│    │Subagent │        │Subagent │        │Subagent │          │
+│    └─────────┘        └─────────┘        └─────────┘          │
 │                             │                                    │
 │         ┌───────────┬───────┴───────┬───────────┐              │
 │         │           │               │           │               │
@@ -82,6 +94,13 @@
 - Orchestrates the conversation loop: send → receive → tool call → result → repeat
 - Manages message history, budget tracking, iteration limits
 - Delegates to prompt builder, context compressor, memory system
+
+### Orchestrator Layer
+- **Never executes tools directly** — only parses intent and dispatches to subagents
+- **Subagent roles**: Inbox Monitor, Code Reviewer, Researcher, Implementer, Auditor
+- **Interrupt handling**: user message immediately terminates active subagents
+- **Result aggregation**: merges parallel subagent outputs before presenting to user
+- **Escalation routing**: subagent uncertainty → orchestrator → user notification
 
 ### Tool Registry
 - Central dispatch for all tool calls
