@@ -13,6 +13,7 @@ Hermes is a multi-modal AI agent that operates across CLI, Telegram, Discord, Sl
 | Diagram | Description |
 |---------|-------------|
 | [System Overview](diagrams/system-overview.md) | High-level agent architecture |
+| [Orchestrator Pattern](diagrams/orchestrator-pattern.md) | v2: subagent roles, interrupt flow, escalation |
 | [Agent Loop](diagrams/agent-loop.md) | Core conversation and tool execution loop |
 | [Memory System](diagrams/memory-system.md) | Persistent memory and context management |
 | [Tool Pipeline](diagrams/tool-pipeline.md) | Tool discovery, dispatch, and execution |
