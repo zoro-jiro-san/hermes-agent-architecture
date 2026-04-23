@@ -106,21 +106,24 @@ The Inbox Monitor is a **persistent subagent** that runs via cron job but behave
 │              │                              │
 │              ▼                              │
 │  ┌─────────────────────────────────────┐   │
-│  │ New message from known contact?     │   │
-│  │ → Is it generic (hi/hello/thanks)?  │   │
-│  │    YES → Reply with generic response│   │
-│  │    NO  → ESCALATE to orchestrator   │   │
-│  └─────────────────────────────────────┘   │
-│              │                              │
-│              ▼                              │
-│  ┌─────────────────────────────────────┐   │
-│  │ Message from unknown contact?       │   │
-│  │ → ESCALATE to orchestrator          │   │
+│  │ New message?                        │   │
+│  │ → Is it a simple greeting?          │   │
+│  │    YES → Warm personal reply:       │   │
+│  │    "hi from Sarthi's agent! how are │   │
+│  │     you? what do you need?"         │   │
+│  │    (vary phrasing each time)        │   │
+│  │                                     │   │
+│  │ → Is it generic + answerable?       │   │
+│  │    YES → Reply helpfully            │   │
+│  │                                     │   │
+│  │ → Is it personal / specific /       │   │
+│  │   sensitive / unsure?               │   │
+│  │    NO → ESCALATE to orchestrator    │   │
 │  └─────────────────────────────────────┘   │
 │                                             │
 │  Escalation format (delivered to user):     │
 │  "Masumi: [Name] says: '[message]'          │
-│   Reply with: masumi-reply [id] [text]"     │
+│   — need your input on how to reply"        │
 │                                             │
 └─────────────────────────────────────────────┘
 ```
