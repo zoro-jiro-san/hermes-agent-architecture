@@ -2,6 +2,8 @@
 
 A living, self-improving architecture document for the Hermes AI agent. Updated daily through autonomous research and iteration.
 
+> **Integrated with [Hermes Second Brain](https://github.com/nousresearch/hermes-second-brain)** — an AI-native knowledge management system that compiles raw research into a structured, queryable wiki with GraphRAG.
+
 ---
 
 ## Overview
@@ -24,7 +26,48 @@ Hermes is a multi-modal AI agent that operates across CLI, Telegram, Discord, Sl
 | [Skill System](diagrams/skill-system.md) | Skill loading, discovery, and execution |
 | [IMAP Trust Protocol](diagrams/imap-trust-protocol.md) | Immune Memory Attestation Protocol for agent trust |
 | [Session Compaction](diagrams/session-compaction.md) | Context eviction and anchored summarization when sessions hit the wall |
+| [Second Brain Integration](diagrams/second-brain-integration.md) | Daily learnings → skills → graph → wiki compounding loop |
 
+## Second Brain Integration
+
+Hermes integrates with **[Hermes Second Brain](https://github.com/nousresearch/hermes-second-brain)**, an AI-native knowledge management system that implements Andrej Karpathy's **LLM Wiki** pattern. Second Brain acts as Hermes's externalized, compounding knowledge cortex.
+
+### The Compounding Loop
+
+```
+Daily Learnings → Skills → Graph → Wiki
+     ↓               ↓        ↓       ↓
+  New research  Procedural  Entity  Queryable
+  arrives       knowledge   graph   documentation
+```
+
+1. **Daily Learnings:** New research (papers, articles, repos) is read and ingested
+2. **Skill Extraction:** Patterns identified → SKILL.md files generated → symlinked into Hermes
+3. **Knowledge Graph:** Entities and concepts extracted; relationships (`uses`, `implements`, `inspired_by`) built
+4. **Wiki Compilation:** LLM creates/updates Markdown pages with citations and wikilinks
+5. **Query & Synthesis:** Agent/human queries the knowledge base; answers can be saved back as synthesis pages (feedback loop)
+
+### Key Benefits
+
+- **Zero maintenance:** LLM compiles and maintains wiki; humans curate sources only
+- **Provenance:** Every claim traces to a raw source file
+- **Compounding:** Answers saved from queries enrich the knowledge base
+- **Obsidian-native:** Files are Markdown with wikilinks; open in Obsidian for graph view
+- **GraphRAG-powered:** Hybrid vector + graph retrieval for accurate, contextual answers
+
+### Automation Schedule
+
+Second Brain operates on a cron schedule integrated with Hermes's nightly pipeline:
+
+- **Daily 3:30 AM:** Research ingest (RSS/arXiv → `raw/`)
+- **Daily 4:00 AM:** Wiki compilation (`hermes-brain-compile --incremental`)
+- **Daily 4:30 AM:** Graph update (extract edges from new pages)
+- **Daily 5:00 AM:** Lint & health check
+- **Weekly Sun 6:00 AM:** Deep lint + insights digest (Telegram + email)
+
+See [full architecture](ARCHITECTURE.md#second-brain-integration-pattern) for details.
+
+## Research Areas
 ## Research Areas
 
 | Area | Status | Notes |
