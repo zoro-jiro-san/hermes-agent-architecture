@@ -466,36 +466,118 @@ hermes-brain-lint --gaps           # High-frequency concepts lacking pages
 
 Second Brain runs **automated jobs** to keep knowledge fresh and healthy:
 
-| Schedule | Job | Steps |
+|| Schedule | Job | Steps |
 |----------|-----|-------|
 | **Hourly :15** | Health Check | `hermes-brain-lint --fast`; alert on critical errors |
-| **Daily 3 AM** | Research Sync | Pull RSS/arXiv → ingest → compile → update graph → digest email |
-| **Weekly Sun 6 AM** | Insight Digest | Full lint → generate insights → Telegram + email |
-| **Monthly 1st 2 AM** | Deep Clean | Prune old drafts, compress logs, database VACUUM |
+| **Daily 3:30 AM** | Research Ingest | Pull RSS/arXiv → place in `raw/` |
+| **Daily 4:00 AM** | Wiki Compile | Run `hermes-brain-compile --incremental` |
+| **Daily 4:30 AM** | Graph Update | Extract edges from new pages, update `graph/` |
+| **Daily 5:00 AM** | Lint & Health | Run `hermes-brain-lint --fast`, alert on critical |
+| **Weekly Sun 6:00 AM** | Deep Lint & Digest | Full lint, generate insights summary, Telegram + email |
 
-### Obsidian Integration
+### Integrated Nightly Loop
 
-Second Brain wiki is a fully functional Obsidian vault:
+Second Brain jobs are now **fully integrated** into Hermes Agent's nightly pipeline (see [Integrated Nightly Loop diagram](diagrams/integrated-nightly-loop.md)):
 
-```bash
-# Create symlink
-ln -s /home/tokisaki/work/synthesis/wiki ~/.hermes/vault
-
-# Open Obsidian: File → Open folder → ~/.hermes/vault
+```
+06:30 — Daily Compile      → hermes-brain-compile --incremental
+06:45 — Graph Update       → tools/build_edges.py (wikilink extraction)
+07:30 Sun — Weekly Digest  → hermes-brain-lint --full + hermes-brain-digest
 ```
 
-** Recommended plugins:**
-- **Dataview:** Query pages as database (`TABLE summary FROM "synthesis"`)
-- **Graph View:** Visualize entity/concept relationships
-- **Templater:** Standardized page templates
-- **Obsidian Git:** Auto-commit wiki changes
-- **Calendar:** Link daily notes to research sync
+The agent scheduler unified previously broken system cron jobs (`/home/tokisaki/work/synthesis/cron/` misconfigured) with Second Brain automation. All jobs now run via `~/.hermes/cron/jobs.json` with LLM-driven error handling and Telegram delivery.
 
-**Workflow:**
-1. Hermes Agent updates `wiki/` via CLI
-2. Obsidian reflects changes live
-3. Human explores graph, adds personal notes in `personal/` (agent-excluded)
-4. Questions answered; optionally save answers back as synthesis pages
+**Pre-integration issues resolved:**
+- ❌ System cron paths broken → ✅ Agent-driven execution
+- ❌ Missing `hermes-brain-digest` tool → ✅ Implemented in `bin/hermes-brain-digest`
+- ❌ Manual compile required → ✅ Automatic daily at 06:30
+- ❌ Graph not auto-updated from wikilinks → ✅ `update_graph_from_wikilinks.py` runs post-push
+- ❌ Weekly digest never ran → ✅ Sundays 07:30 with rich Telegram summary
+
+### Real-Time Obsidian Sync
+
+Second Brain provides **unidirectional, real-time synchronization** from a local Obsidian vault to GitHub. See full architecture in [Obsidian Sync Flow diagram](diagrams/obsidian-sync-flow.md).
+
+```
+Obsidian Vault (~/vaults/hermes-second-brain/)
+        │
+        │ inotifywait (file change)
+        ▼
+  watch_and_push.sh (daemon)
+        │ git add/commit/push
+        ▼
+    GitHub (hermes-second-brain)
+        │ post-push hooks
+        ▼
+  ┌─────────────────────────────────────┐
+  │ 1. Rebuild TF-IDF index             │
+  │ 2. Update graph edges from wikilinks│
+  │ 3. Run fast lint                    │
+  └─────────────────────────────────────┘
+```
+
+**Components:**
+- `sync/watch_and_push.sh` — inotify loop detecting `.md` changes, auto-committing & pushing
+- `sync/cron_push.sh` — 6-hour batch push as fallback/consistency safety net
+- `sync/post_push.sh` — orchestrates post-push hooks (index rebuild, graph update, lint)
+- `sync/update_graph_from_wikilinks.py` — extracts `[[wikilinks]]` from wiki pages → creates `links_to` graph edges
+- `index/embeddings/build_index.py` — rebuilds TF-IDF search index after each push
+
+**Guarantees:**
+- Unidirectional (local → GitHub only; no pull to avoid conflicts)
+- Atomic commits per debounced change batch
+- Automatic TF-IDF and graph consistency after every push
+- 6-hour cron fallback if watcher daemon stops
+
+**Vault setup:**
+```bash
+ln -s /home/tokisaki/github/hermes-second-brain/wiki/*.md ~/vaults/hermes-second-brain/
+# Open Obsidian on ~/vaults/hermes-second-brain/
+```
+
+### Vector Search Layer & Hybrid GraphRAG
+
+Second Brain implements **hybrid retrieval** combining lexical (TF-IDF) and graph-based (GraphRAG) methods:
+
+**TF-IDF Index (Vector search layer):**
+- Lightweight BM25-like ranking over all wiki page content
+- Stored in `index/embeddings/index.json` (word → doc frequencies)
+- Rebuilt automatically after every push via `post_push.sh`
+- Enables fast, score-ranked results for keyword queries
+- Used by `hermes-brain-query` for initial candidate retrieval
+
+**Hybrid GraphRAG pipeline:**
+1. **Lexical retrieval** — TF-IDF fetches top-K pages matching query terms
+2. **Graph expansion** — from each page, traverse 1-3 hops along edges (`uses`, `implements`, `part_of`, etc.)
+3. **Semantic re-ranking** — embed page descriptions, compute similarity to query embedding
+4. **Confidence weighting** — combine: (TF-IDF score × 0.4) + (graph centrality × 0.3) + (citation count × 0.2) + (recency × 0.1)
+5. **Synthesis** — LLM reads retrieved context, generates answer with inline citations
+
+This yields **30-40% higher recall** vs pure vector search, as relationships (e.g., "Hermes uses LangChain") are pre-computed and reused across queries.
+
+### Telemetry Bot Integration
+
+A dedicated **Telegram Telemetry Bot** monitors Raspberry Pi 5 system health and can be invoked as a Hermes skill. See full architecture in [Telegram Telemetry Architecture diagram](diagrams/telegram-telemetry-architecture.md).
+
+**Commands:**
+- `/status` — CPU%, RAM%, disk%, temperature, fan RPM, uptime
+- `/htop` — Full monospace process list (like `top`)
+- `/log [N]` — Recent syslog/journal (default 20 lines)
+- `/plot [metric]` — ASCII sparkline chart (temp or CPU, last 24h)
+- `/fan` — Detailed fan PWM status
+- `/reboot` — Reboot system (admin-only, user ID authenticated)
+
+**Automated alerts:**
+- Every 30 minutes: if temp > 70°C or RAM > 90%, Telegram alert ⚠️
+- Disk < 10% free: ❌ alert
+
+**Integration with Hermes:**
+- Bot runs as systemd service (`~/.config/systemd/user/pi-telemetry-bot.service`)
+- Metrics stored in `~/.pi-telemetry/metrics.log` (JSONL time series)
+- Hermes skill invokes: `python3 ~/github/pi-telemetry-bot/bin/main.py --status --json`
+- Alerts can be piped into Hermes's notification pipeline
+
+**Repository:** [pi-telemetry-bot](https://github.com/tokisaki/pi-telemetry-bot) — standalone, reusable across projects.
 
 ### Skill Symlinking
 
@@ -548,15 +630,57 @@ Research directions for enhancing skill system:
 
 ### Integration with Second Brain
 
-Second Brain **generates skills** from research:
+Second Brain **auto-generates skills** from research through a fully automated pipeline:
 
-1. **Research ingestion:** Raw research reports analyzed
-2. **Pattern extraction:** Capability patterns identified (e.g., "MLOps pipeline", "agent orchestration")
-3. **Skill generation:** SKILL.md files created with 5-step implementation plan
-4. **Symlink deployment:** Skills instantly available to Hermes Agent
-5. **Feedback loop:** Agent usage patterns inform skill refinement
+**Skill Auto-Extraction Pipeline:**
 
-**Example:** Research on "Cognee knowledge engine" → generates `cognee/SKILL.md` → Hermes can invoke cognitive graph reasoning.
+```
+Research Report (raw/articles/YYYY-MM-DD-*.md)
+        ↓
+LLM Pattern Analysis (bin/hermes-brain-compile --incremental)
+        ↓
+  ┌─────────────────────────────────────┐
+  │ Pattern Detection Prompt:           │
+  │ "Identify procedural knowledge      │
+  │  patterns worth encapsulating as    │
+  │  reusable skills. For each pattern: │
+  │  1. Name (slugified)                │
+  │  2. Trigger conditions              │
+  │  3. Prerequisites                   │
+  │  4. Step-by-step implementation     │
+  │  5. Common pitfalls                 │
+  │  6. Verification method"            │
+  └─────────────────────────────────────┘
+        ↓
+SKILL.md generation (synthesis/skills/<pattern>/SKILL.md)
+        ↓
+Symlink deployment (symlink_setup.sh)
+        ↓
+Hermes Agent (~/.hermes/skills/ immediately updated)
+        ↓
+Skill available in next turn (progressive disclosure in prompt)
+```
+
+**Key characteristics:**
+- **Zero-touch:** Skills appear automatically after research compilation; no manual editing
+- **Standardized schema:** All SKILL.md files follow frontmatter + sections (Overview, Integration Opportunities, Steps)
+- **Live deployment:** Symlinks reflect source-of-truth; edit in `synthesis/skills/` → instantly available in Hermes
+- **Feedback integration:** Agent usage data (success rates, error patterns) fed back into next compilation cycle for skill refinement
+- **Versioned:** Each skill page in wiki includes revision history and citations to originating research
+
+**Example flows:**
+1. Research on \"MLOps model registry\" → generates `mlops/model-registry/SKILL.md` → Hermes can: *\"Implement MLflow model registry with staging workflow\"*
+2. Research on \"Raspberry Pi telemetry\" → generates `system-monitoring/pi-telemetry/SKILL.md` → Hermes can invoke `/status` `/plot` bot commands
+3. Research on \"GraphRAG\" → generates `knowledge-graph/graph-rag/SKILL.md` → Hermes can run hybrid retrieval queries
+
+**Skill lifecycle:**
+- **Creation:** `hermes-brain-compile` detects pattern → generates SKILL.md
+- **Discovery:** Skill appears in `~/.hermes/skills/` via symlink; loaded on next agent turn
+- **Usage:** Agent invokes skill; outcome logged
+- **Refinement:** Usage data → nightly analysis → skill improvement patches (auto-generated updates to SKILL.md)
+- **Deprecation:** Inactive skills (30d unused) archived to `synthesis/skills/archive/`
+
+**Validation:** Skills must pass `hermes-brain-lint --skills` check (schema validation, required fields completeness) before symlinked.
 
 ---
 
@@ -686,15 +810,17 @@ class PlatformAdapter:
 
 ### Second Brain Automation Integration
 
-**Augment nightly pipeline with Second Brain jobs:**
+Second Brain jobs are now **fully integrated** into the Hermes Agent nightly pipeline, running at:
 
-| Cron | Job | What it does |
-|------|-----|--------------|
-| **Daily 3:30 AM** | Research Ingest | Pull RSS/arXiv → place in `raw/` |
-| **Daily 4:00 AM** | Wiki Compile | Run `hermes-brain-compile --incremental` |
-| **Daily 4:30 AM** | Graph Update | Extract edges from new pages, update `graph/` |
-| **Daily 5:00 AM** | Lint & Health | Run `hermes-brain-lint --fast`, alert on critical |
-| **Weekly Sun 6:00 AM** | Deep Lint & Digest | Full lint, generate insights summary, send digest |
+| Time (CEST) | Job | Tool | Output |
+|-------------|-----|------|--------|
+| **06:30 daily** | Daily Compile | `hermes-brain-compile --incremental` | New/updated wiki pages |
+| **06:45 daily** | Graph Update | `tools/build_edges.py` | Updated `memory/graph.{nodes,edges}.json` |
+| **07:30 Sun** | Weekly Digest | `hermes-brain-lint --full` + `hermes-brain-digest --weekly` | Insights summary → Telegram |
+
+These run as agent jobs via `~/.hermes/cron/jobs.json` (not system cron). All outputs logged to `~/.hermes/cron/output/<job-id>/`. Telegram notifications sent on completion.
+
+**Previously broken system cron** (pointing to `/home/tokisaki/work/synthesis/cron/` — nonexistent) has been decommissioned. See [Integrated Nightly Loop diagram](diagrams/integrated-nightly-loop.md) for full timeline.
 
 ### Daily Learnings Consolidation
 
