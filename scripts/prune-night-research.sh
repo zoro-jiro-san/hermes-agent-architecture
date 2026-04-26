@@ -26,15 +26,15 @@ while IFS= read -r -d '' file; do
 
     if [[ $age_days -gt $RETENTION_DAYS ]]; then
         rm -f "$file"
-        ((deleted++))
+        deleted=$((deleted+1))
     elif [[ $age_days -gt $COMPRESS_AFTER_DAYS ]]; then
         # Compress only .md files, keep originals replaced with .gz
         if [[ "$file" == *.md ]] && [[ ! "$file" == *.gz ]]; then
             gzip -9 "$file"
-            ((compressed++))
+            compressed=$((compressed+1))
         fi
     else
-        ((kept++))
+        kept=$((kept+1))
     fi
 done < <(find "$DIR" -type f -print0)
 
